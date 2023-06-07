@@ -1,7 +1,5 @@
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -9,11 +7,12 @@ public class Main {
         //Инициализируем переменную для проверки на количество столбцов в таблице
         int wordsCount = 6;
 
+        //Не актуально после Part2
         /*Выбираем вариант сортировки
         OPTION1 - Сортировка списка городов по наименованию в алфавитном порядке по убыванию без учета регистра;
         OPTION2 - Сортировка списка городов по федеральному округу и наименованию города внутри каждого федерального округа в алфавитном порядке по убыванию с учетом регистра.
         */
-        SortOption sortOption = SortOption.OPTION2;
+        //SortOption sortOption = SortOption.OPTION2;
 
 
         //Создаем список для сортировки
@@ -62,13 +61,42 @@ public class Main {
             throw new RuntimeException(e);
         }
 
+        //Не актуально после Part2
         //Сортируем
-        if(sortOption==SortOption.OPTION1){
-            list.sort((o1, o2) -> o2.getTableName().compareToIgnoreCase(o1.getTableName()));
-        } else if (sortOption==SortOption.OPTION2) {
-            list.sort(Comparator.comparing(City::getTableDistrict).thenComparing(City::getTableName).reversed());
+        //if(sortOption==SortOption.OPTION1){
+        //    list.sort((o1, o2) -> o2.getTableName().compareToIgnoreCase(o1.getTableName()));
+        //} else if (sortOption==SortOption.OPTION2) {
+        //    list.sort(Comparator.comparing(City::getTableDistrict).thenComparing(City::getTableName).reversed());
+        //}
+
+        // Не актуально после Part2
+        // list.forEach(System.out::println);
+
+        //Преобразуем список городов в массив
+        City[] cities = list.toArray(City[]::new);
+        //Ищем город с наибольшим количеством жителей города
+        City cityWithMaxPopulation = Arrays.stream(cities).sorted(new Comparator<City>() {
+            @Override
+            public int compare(City o1, City o2) {
+               if(Integer.parseInt(o1.getTablePopulation())>Integer.parseInt(o2.getTablePopulation()))
+                return -1;
+               else if (Integer.parseInt(o1.getTablePopulation())==Integer.parseInt(o2.getTablePopulation())) {
+                   return 0;
+               } else return 1;
+            }
+        }).findFirst().get();
+
+        //Ищем в массиве индекс города с наибольшим количеством жителей
+        int indexCityWithMaxPopulation = 0;
+        long maxPopulation = 0;
+        for (int i = 0; i <cities.length; i++) {
+            if(cities[i].equals(cityWithMaxPopulation)){
+            indexCityWithMaxPopulation = i;
+            maxPopulation = Integer.parseInt(cities[i].getTablePopulation());
+            }
         }
 
-        list.forEach(System.out::println);
+        //Выводим на экран
+        System.out.println("["+indexCityWithMaxPopulation+"] = "+maxPopulation);
     }
 }
